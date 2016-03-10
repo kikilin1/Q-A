@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Quizzzz</title>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+         <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+        <style>
+            .correct{
+                background-color:chartreuse;
+            }
+            .wrong{
+                background-color: crimson;
+            }
+        
+        
+        
+        </style>
+
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <h1>Quizzz</h1>
+                <div class="col-sx-12">
+                    <p id="questions0"></p>
+                    <ul id="answers0"></ul>
+                    <p id="questions1"></p>
+                    <ul id="answers1"></ul>
+                    <p id="questions2"></p>
+                    <ul id="answers2"></ul>
+                    <p id="questions3"></p>
+                    <ul id="answers3"></ul>
+                    <p id="questions4"></p>
+                    <ul id="answers4"></ul>
+                    
+            </div>
+        </div>
+          
+             <button id="done" type="button" class="btn btn-warning">Done</button>
+        
+        
+        
+        
+        
+        
+        </div>
+        <script>
+            $.ajax({
+                url:"http://fvi-grad.com:4004/quiz",
+                success: function(res, txt, xhr){
+                    for( var x in res){
+                        $("#questions"+x).html(res[x].questionText);
+                        $("#questions"+x).attr("question-id", res[x].id);
+                        var answers = res[x].answers;
+                        for( var i=0; i< answers.length; i++){
+
+                            $("#answers"+x).append("<input type='radio' name='q"+x+"' value='"+answers[i]+"'> "+answers[i]+"<br>");
+                        }
+                    }
+                        
+                }
+            });
+           
+            /*$.ajax({
+                url:"http://fvi-grad.com:4004/quiz",
+                success: function(res, txt, xhr){
+                    var answers = res[0].answers;
+                    for( var i=0; i< answers.length; i++){
+                       
+                        $("#answers").append("<input type='radio' name='q1' value='"+answers[i]+"'> "+answers[i]+"<br>");
+                    }
+                }
+            });*/
+            
+            $("#done").click(function(){
+               correctQuestion(0);
+                correctQuestion(1);
+                correctQuestion(2);
+                correctQuestion(3);
+                correctQuestion(4);
+            });
+            
+            function correctQuestion(x){
+                $.ajax({
+                    url:"http://fvi-grad.com:4004/quiz-get-answer/"+$('#questions'+x).attr('question-id'),
+                    success: function(res, txt, xhr){
+                        var correctAnswer=res.substring(1,res.length-1);
+                        var yourAnswer=$("input[name=q"+x+"]:checked").val();
+
+                        console.log(correctAnswer+" "+yourAnswer); 
+
+
+                        if(correctAnswer===yourAnswer){
+                            console.log("correct");
+                            $("#answers"+x).addClass("correct")
+
+                        }
+                        else{
+                            console.log("wrong");
+                             $("#answers"+x).addClass("wrong")
+
+                        }
+                    }
+                });
+            }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        </script>
+    
+    
+    
+    
+    
+    
+    
+    
+    </body>
+
+
+
+
+
+</html>
